@@ -1,0 +1,59 @@
+buildscript {
+    ext.kotlin_version = '1.2.21'
+    ext.legui_version = "1.4.3-SNAPSHOT"
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+group 'com.cout970.'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+sourceCompatibility = "1.8"
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "LWJGL and JOML"
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+    maven {
+        url = "https://raw.github.com/LiquidEngine/repo/releases"
+    }
+    maven {
+        url = "https://raw.github.com/LiquidEngine/repo/snapshots"
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile group: 'org.liquidengine', name: 'legui', version: legui_version, changing: true
+    compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '0.22.1'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+jar {
+    exclude("com/cout970/reactive/internal/**")
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
