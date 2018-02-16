@@ -18,17 +18,17 @@ fun Component.transparent() {
     style.background.color = ColorConstants.transparent()
 }
 
-fun Component.boderless() {
-    style.border.isEnabled = false
+fun Component.borderless() {
+    style.border = null
 }
 
-var Component.boderSize: Float
+var Component.borderSize: Float
     get() = (style.border as? SimpleLineBorder)?.thickness ?: 0f
     set(value) {
         (style.border as? SimpleLineBorder)?.thickness = value
     }
 
-fun Component.boderColor(func: () -> Vector4f) {
+fun Component.borderColor(func: () -> Vector4f) {
     (style.border as? SimpleLineBorder)?.color = func()
 }
 

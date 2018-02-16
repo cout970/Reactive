@@ -7,9 +7,9 @@ import com.cout970.reactive.nodes.child
 import com.cout970.reactive.nodes.div
 import com.cout970.reactive.nodes.label
 import org.joml.Vector2f
+import org.liquidengine.legui.component.Label
 import org.liquidengine.legui.component.optional.align.HorizontalAlign
-import org.liquidengine.legui.style.color.ColorConstants.green
-import org.liquidengine.legui.style.color.ColorConstants.red
+import org.liquidengine.legui.style.color.ColorConstants.*
 
 fun main(args: Array<String>) {
 
@@ -18,10 +18,9 @@ fun main(args: Array<String>) {
         env.frame.container.size = Vector2f(400f, 200f)
 
         val ctx = Renderer.render(env.frame.container) {
-            child(ExampleButton::class, ExampleButton.Props("Hi"))
+            child(DemoComponent::class)
         }
 
-        env.context.isDebugEnabled = true
 
         updateOnResize(ctx, env)
 
@@ -41,6 +40,28 @@ fun updateOnResize(ctx: RContext, env: LeguiEnvironment) {
 
             // Rerender the screen
             AsyncManager.runLater { Renderer.rerender(ctx) }
+        }
+    }
+}
+
+data class DemoState(val count: Int) : RState
+
+class DemoComponent : RComponent<EmptyProps, DemoState>() {
+
+    override fun getInitialState() = DemoState(0)
+
+    override fun RBuilder.render() {
+        +Label("You clicked me ${state.count} times!").apply {
+
+            sizeX = 150f
+            sizeY = 30f
+
+            backgroundColor { lightBlue() }
+            borderless()
+
+            onClick {
+                setState { DemoState(count + 1) }
+            }
         }
     }
 }

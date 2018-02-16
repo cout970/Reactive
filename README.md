@@ -1,0 +1,30 @@
+# Reactive
+Plugin for legui adding react like api for building user interfaces
+
+### Code example
+
+This is a small component that shows the number of times it has been clicked, but the important part is what you don't see,
+there is no code to change the label text, it updates itself when the state of the component changes!
+```kotlin
+data class DemoState(val count: Int) : RState
+
+class DemoComponent : RComponent<EmptyProps, DemoState>() {
+
+    override fun getInitialState() = DemoState(0)
+
+    override fun RBuilder.render() {
+        +Label("You clicked me ${state.count} times!").apply {
+
+            sizeX = 150f
+            sizeY = 30f
+
+            backgroundColor { lightBlue() }
+            borderless()
+
+            onClick {
+                setState { DemoState(count + 1) }
+            }
+        }
+    }
+}
+```

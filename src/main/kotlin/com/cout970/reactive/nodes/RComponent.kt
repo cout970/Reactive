@@ -11,6 +11,10 @@ class RComponentDescriptor<P : RProps, T : RComponent<P, *>>(val clazz: Class<T>
 fun <P : RProps, T : RComponent<P, *>> RBuilder.child(clazz: KClass<T>, props: P) =
         child(clazz.java, props)
 
+fun <T : RComponent<EmptyProps, *>> RBuilder.child(clazz: KClass<T>) =
+        child(clazz.java, EmptyProps)
+
+
 fun <P : RProps, T : RComponent<P, *>> RBuilder.child(clazz: Class<T>, props: P) =
         +RNode("RComp", RComponentDescriptor(clazz, props))
 
