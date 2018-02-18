@@ -7,6 +7,7 @@ abstract class RComponent<P : RProps, S : RState> {
     internal lateinit var ctx: RContext
     internal lateinit var mountPoint: Component
     internal var mounted: Boolean = false
+    internal var key: String? = null
 
     var state: S = getInitialState()
         private set
@@ -39,6 +40,10 @@ abstract class RComponent<P : RProps, S : RState> {
     abstract fun RBuilder.render()
 
     fun render() = buildNodeList { render() }
+}
+
+abstract class RStatelessComponent<P : RProps> : RComponent<P, EmptyState>() {
+    override fun getInitialState() = EmptyState
 }
 
 object EmptyProps : RProps

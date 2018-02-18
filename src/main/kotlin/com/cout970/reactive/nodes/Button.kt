@@ -10,14 +10,13 @@ data class ButtonDescriptor(private val text: String) : RDescriptor {
     override fun mapToComponent(): Component = Button().apply { textState.text = text; }
 }
 
-class ButtonBuilder : RBuilder() {
-    var text: String = ""
+class ButtonBuilder(var text: String = "") : RBuilder() {
 
     override fun toDescriptor(): RDescriptor = ButtonDescriptor(text)
 }
 
-fun RBuilder.button(key: String, block: ButtonBuilder.() -> Unit = {}) =
-        +ButtonBuilder().apply(block).build(key)
+fun RBuilder.button(text: String = "", key: String? = null, block: ButtonBuilder.() -> Unit = {}) =
+        +ButtonBuilder(text).apply(block).build(key)
 
 fun ButtonBuilder.attr(func: Button.() -> Unit) {
     deferred = { (it as Button).func() }

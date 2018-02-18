@@ -10,8 +10,9 @@ open class RBuilder {
     val listeners = mutableListOf<Listener<*>>()
     var deferred: ((Component) -> Unit)? = null
 
-    inline fun <reified T : Event<Component>> on(noinline handler: (T) -> Unit) {
-        listeners.add(Listener(T::class.java, handler))
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T: Event<*>> on(noinline handler: (T) -> Unit) {
+        listeners.add(Listener(T::class.java as Class<Event<Component>>, handler as (Event<Component>) -> Unit))
     }
 
     operator fun RNode.unaryPlus() {

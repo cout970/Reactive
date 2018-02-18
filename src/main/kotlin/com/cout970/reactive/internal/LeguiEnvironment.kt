@@ -26,6 +26,7 @@ class LeguiEnvironment(windowSize: Vector2f) {
     val frame: Frame
     @Volatile
     var running = false
+    var update: () -> Unit = {}
 
     init {
         System.setProperty("joml.nounsafe", java.lang.Boolean.TRUE.toString())
@@ -116,6 +117,8 @@ class LeguiEnvironment(windowSize: Vector2f) {
             // When system events are translated to GUI events we need to process them.
             // This event processor calls listeners added to ui components
             EventProcessor.getInstance().processEvents()
+
+            update()
         }
     }
 

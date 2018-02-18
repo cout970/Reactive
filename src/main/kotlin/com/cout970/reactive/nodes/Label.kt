@@ -6,7 +6,7 @@ import org.liquidengine.legui.component.Component
 import org.liquidengine.legui.component.Label
 
 class LabelDescriptor(val text: String) : RDescriptor {
-    override fun mapToComponent(): Component = Label(text)
+    override fun mapToComponent(): Component = Label(text, 0f, 0f, 100f, 16f)
 }
 
 class LabelBuilder(var text: String) : RBuilder() {

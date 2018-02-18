@@ -7,14 +7,14 @@ import org.liquidengine.legui.component.Component
 import org.liquidengine.legui.component.Panel
 
 class DivDescriptor() : RDescriptor {
-    override fun mapToComponent(): Component = Panel().apply { size = Vector2f(60f, 60f) }
+    override fun mapToComponent(): Component = Panel().apply { size = Vector2f(100f, 100f) }
 }
 
 class DivBuilder : RBuilder() {
     override fun toDescriptor(): RDescriptor = DivDescriptor()
 }
 
-fun RBuilder.div(key: String, block: DivBuilder.() -> Unit = {}) = +DivBuilder().apply(block).build(key)
+fun RBuilder.div(key: String? = null, block: DivBuilder.() -> Unit = {}) = +DivBuilder().apply(block).build(key)
 
 fun DivBuilder.attr(func: Panel.() -> Unit) {
     deferred = { (it as Panel).func() }

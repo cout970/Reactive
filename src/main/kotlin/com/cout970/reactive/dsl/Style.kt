@@ -2,6 +2,9 @@ package com.cout970.reactive.dsl
 
 import org.joml.Vector4f
 import org.liquidengine.legui.component.Component
+import org.liquidengine.legui.component.TextComponent
+import org.liquidengine.legui.component.optional.align.HorizontalAlign
+import org.liquidengine.legui.component.optional.align.VerticalAlign
 import org.liquidengine.legui.icon.Icon
 import org.liquidengine.legui.style.border.SimpleLineBorder
 import org.liquidengine.legui.style.color.ColorConstants
@@ -64,4 +67,36 @@ fun Component.paddingLeft(amount: Float) {
 fun Component.paddingRight(amount: Float) {
     if (style.padding == null) style.padding = Vector4f()
     style.padding.z = amount
+}
+
+var TextComponent.fontSize: Float
+    get() = textState.fontSize
+    set(value) {
+        textState.fontSize = value
+    }
+
+var TextComponent.font: String
+    get() = textState.font
+    set(value) {
+        textState.font = value
+    }
+
+var TextComponent.horizontalAlign: HorizontalAlign
+    get() = textState.horizontalAlign
+    set(value) {
+        textState.horizontalAlign = value
+    }
+
+var TextComponent.verticalAlign: VerticalAlign
+    get() = textState.verticalAlign
+    set(value) {
+        textState.verticalAlign = value
+    }
+
+fun TextComponent.textColor(func: () -> Vector4f) {
+    textState.textColor = func()
+}
+
+fun TextComponent.highlightColor(func: () -> Vector4f) {
+    textState.highlightColor = func()
 }

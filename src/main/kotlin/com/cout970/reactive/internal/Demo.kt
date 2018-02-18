@@ -1,106 +1,50 @@
 package com.cout970.reactive.internal
 
-import com.cout970.reactive.core.*
-import com.cout970.reactive.dsl.*
-import com.cout970.reactive.nodes.attr
-import com.cout970.reactive.nodes.child
-import com.cout970.reactive.nodes.div
-import com.cout970.reactive.nodes.label
+import com.cout970.reactive.core.AsyncManager
+import com.cout970.reactive.core.RContext
+import com.cout970.reactive.core.Renderer
+import com.cout970.reactive.core.SyncManager
 import org.joml.Vector2f
-import org.liquidengine.legui.component.Label
-import org.liquidengine.legui.component.optional.align.HorizontalAlign
-import org.liquidengine.legui.style.color.ColorConstants.*
 
-fun main(args: Array<String>) {
+fun demoWindow(builder: (LeguiEnvironment) -> RContext) {
 
-    LeguiEnvironment(windowSize = Vector2f(400f, 200f)).let { env ->
+    LeguiEnvironment(windowSize = Vector2f(400f, 400f)).let { env ->
 
-        env.frame.container.size = Vector2f(400f, 200f)
+        env.frame.container.size = Vector2f(400f, 400f)
 
-        val ctx = Renderer.render(env.frame.container) {
-            child(DemoComponent::class)
-        }
-
+        val ctx = builder(env)
 
         updateOnResize(ctx, env)
+
+        AsyncManager.setInstance(SyncManager)
+        env.update = {
+            SyncManager.runSync()
+        }
 
         env.loop()
         env.finalice()
     }
 }
 
+// Updates the gui when the frame size changes, This is needed if you don't use layout
 fun updateOnResize(ctx: RContext, env: LeguiEnvironment) {
+
     var lastTime = System.currentTimeMillis()
+
     // Add callback for window resize
     env.keeper.chainFramebufferSizeCallback.add { _, _, _ ->
+
         // limit resize count to 1 per second
         val now = System.currentTimeMillis()
         if (now - lastTime > 1000) {
             lastTime = now
 
             // Rerender the screen
-            AsyncManager.runLater { Renderer.rerender(ctx) }
-        }
-    }
-}
-
-data class DemoState(val count: Int) : RState
-
-class DemoComponent : RComponent<EmptyProps, DemoState>() {
-
-    override fun getInitialState() = DemoState(0)
-
-    override fun RBuilder.render() {
-        +Label("You clicked me ${state.count} times!").apply {
-
-            sizeX = 150f
-            sizeY = 30f
-
-            backgroundColor { lightBlue() }
-            borderless()
-
-            onClick {
-                setState { DemoState(count + 1) }
+            AsyncManager.runLater {
+                Renderer.rerender(ctx)
             }
         }
     }
 }
-
-class ExampleButton : RComponent<ExampleButton.Props, ExampleButton.State>() {
-
-    override fun getInitialState() = State(false)
-
-    override fun RBuilder.render() = div("ToggleButton") {
-
-        attr {
-            sizeX = 500f
-            sizeY = 200f
-        }
-
-        label(props.text) {
-            attr {
-                backgroundColor { if (state.on) green() else red() }
-                cornerRadius(0f)
-                sizeX = 150f
-                sizeY = 30f
-
-                posX = 20f
-                posY = 20f
-
-                textState.apply {
-                    horizontalAlign = HorizontalAlign.CENTER
-                    fontSize = 20f
-                }
-            }
-
-            onClick { setState { State(!on) } }
-        }
-
-    }
-
-    data class Props(val text: String) : RProps
-    data class State(val on: Boolean) : RState
-}
-
 
 
