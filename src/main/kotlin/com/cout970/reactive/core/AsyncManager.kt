@@ -1,6 +1,5 @@
 package com.cout970.reactive.core
 
-import com.cout970.reactive.core.CoroutineAsyncManager.setTimeout
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.newSingleThreadContext
@@ -13,14 +12,14 @@ interface IAsyncManager {
 
 object AsyncManager : IAsyncManager {
 
-    private var instance: IAsyncManager = CoroutineAsyncManager
+    private var instance: IAsyncManager = SyncManager
 
     fun setInstance(manager: IAsyncManager) {
         instance = manager
     }
 
     override fun runLater(function: () -> Unit) {
-        setTimeout(0, function)
+        instance.runLater(function)
     }
 }
 
@@ -29,7 +28,7 @@ object SyncManager : IAsyncManager {
     private val taskQueue = mutableListOf<() -> Unit>()
 
     fun runSync() {
-        taskQueue.forEach { it() }
+        taskQueue.removeAll { it(); true }
     }
 
     override fun runLater(function: () -> Unit) {
