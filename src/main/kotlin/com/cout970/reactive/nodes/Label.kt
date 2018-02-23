@@ -16,6 +16,6 @@ class LabelBuilder(var text: String) : RBuilder() {
 fun RBuilder.label(text: String = "", key: String? = null, block: LabelBuilder.() -> Unit = {}) =
         +LabelBuilder(text).apply(block).build(key)
 
-fun LabelBuilder.attr(func: Label.() -> Unit) {
+fun LabelBuilder.style(func: Label.() -> Unit) {
     deferred = { (it as Label).func() }
 }

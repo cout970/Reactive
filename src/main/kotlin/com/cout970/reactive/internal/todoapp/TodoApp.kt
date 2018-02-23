@@ -24,13 +24,13 @@ class TodoApp : RComponent<EmptyProps, TodoAppState>() {
 
     override fun RBuilder.render() = div("TodoApp") {
 
-        attr {
+        style {
             sizeX = 180f
             sizeY = 300f
         }
 
         label("TODO") {
-            attr {
+            style {
                 sizeX = 180f
                 fontSize = 24f
                 horizontalAlign = HorizontalAlign.CENTER
@@ -39,7 +39,7 @@ class TodoApp : RComponent<EmptyProps, TodoAppState>() {
 
         comp(TextInput()) {
 
-            attr {
+            style {
                 posX = 5f
                 posY = 30f
                 sizeX = 170f
@@ -53,7 +53,7 @@ class TodoApp : RComponent<EmptyProps, TodoAppState>() {
 
         button("Add #${state.items.size + 1}") {
 
-            attr {
+            style {
                 posX = 50f
                 posY = 60f
                 sizeX = 80f
@@ -82,8 +82,8 @@ class TodoList : RStatelessComponent<TodoListProps>() {
 
     override fun RBuilder.render() = div("TodoList") {
 
-        attr {
-            if(props.items.isEmpty())
+        style {
+            if (props.items.isEmpty())
                 isVisible = false
 
             posX = 10f
@@ -94,7 +94,7 @@ class TodoList : RStatelessComponent<TodoListProps>() {
 
         props.items.forEachIndexed { index, item ->
             label(text = "- $item") {
-                attr {
+                style {
                     posX = 5f
                     posY = index * 20f
                     sizeY = 20f

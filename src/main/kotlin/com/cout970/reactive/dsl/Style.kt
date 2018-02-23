@@ -25,6 +25,10 @@ fun Component.borderless() {
     style.border = null
 }
 
+fun Component.rectCorners() {
+    style.cornerRadius.set(0f)
+}
+
 var Component.borderSize: Float
     get() = (style.border as? SimpleLineBorder)?.thickness ?: 0f
     set(value) {

@@ -3,10 +3,10 @@ package com.cout970.reactive.internal.nested
 import com.cout970.reactive.core.*
 import com.cout970.reactive.dsl.*
 import com.cout970.reactive.internal.demoWindow
-import com.cout970.reactive.nodes.attr
 import com.cout970.reactive.nodes.child
 import com.cout970.reactive.nodes.div
 import com.cout970.reactive.nodes.label
+import com.cout970.reactive.nodes.style
 import org.joml.Vector2f
 import org.liquidengine.legui.style.color.ColorConstants
 
@@ -31,7 +31,7 @@ class NestedComponent : RStatelessComponent<EmptyProps>() {
     }
 
     override fun RBuilder.render() = div("NestedComponent") {
-        attr {
+        style {
             sizeX = 256f
             sizeY = 256f
         }
@@ -39,7 +39,7 @@ class NestedComponent : RStatelessComponent<EmptyProps>() {
 
         child(StateTesterComponent::class, PositionProps(Vector2f(128f, 0f)))
         label("Level 1") {
-            attr {
+            style {
                 posY = 128f
                 sizeX = 32f
                 sizeY = 32f
@@ -61,7 +61,7 @@ class MoreNestedComponent : RStatelessComponent<PositionProps>() {
     }
 
     override fun RBuilder.render() = div("MoreNestedComponent") {
-        attr {
+        style {
             position.set(props.pos)
             sizeX = 128f
             sizeY = 128f
@@ -69,7 +69,7 @@ class MoreNestedComponent : RStatelessComponent<PositionProps>() {
         child(ForceUpdateButton::class, ForceUpdateButton.Props(Vector2f(0f, 0f), { rerender() }))
         child(StateTesterComponent::class, PositionProps(Vector2f(64f, 0f)))
         label("Level 2") {
-            attr {
+            style {
                 posY = 64f
                 sizeX = 32f
                 sizeY = 32f
@@ -92,7 +92,7 @@ class EvenMoreNestedComponent : RStatelessComponent<PositionProps>() {
     }
 
     override fun RBuilder.render() = div("EvenMoreNestedComponent") {
-        attr {
+        style {
             position.set(props.pos)
             sizeX = 64f
             sizeY = 64f
@@ -100,7 +100,7 @@ class EvenMoreNestedComponent : RStatelessComponent<PositionProps>() {
         child(ForceUpdateButton::class, ForceUpdateButton.Props(Vector2f(0f, 0f), { rerender() }))
         child(StateTesterComponent::class, PositionProps(Vector2f(32f, 0f)))
         label("Level 3") {
-            attr {
+            style {
                 posY = 32f
                 sizeX = 32f
                 sizeY = 32f
@@ -120,7 +120,7 @@ class StateTesterComponent : RStatelessComponent<PositionProps>() {
     }
 
     override fun RBuilder.render() = div("Tester") {
-        attr {
+        style {
             position.set(props.pos)
             sizeX = 32f
             sizeY = 64f
@@ -145,7 +145,7 @@ class ExampleToggleButton : RComponent<PositionProps, ExampleToggleButton.State>
 
     override fun RBuilder.render() = div("ToggleButton") {
 
-        attr {
+        style {
             backgroundColor { if (state.on) ColorConstants.green() else ColorConstants.red() }
             cornerRadius(0f)
 
@@ -156,7 +156,7 @@ class ExampleToggleButton : RComponent<PositionProps, ExampleToggleButton.State>
 
         if (state.on) {
             div("OnlyOn") {
-                attr {
+                style {
                     sizeX = 16f
                     sizeY = 32f
                 }
@@ -184,7 +184,7 @@ class CounterButton : RComponent<EmptyProps, CounterButton.State>() {
 
     override fun RBuilder.render() = label(state.count.toString(), "CounterButton") {
 
-        attr {
+        style {
             backgroundColor { ColorConstants.lightBlack() }
             cornerRadius(0f)
             textState.textColor = ColorConstants.white()
@@ -210,7 +210,7 @@ class ForceUpdateButton : RStatelessComponent<ForceUpdateButton.Props>() {
 
     override fun RBuilder.render() = div("ForceUpdateButton") {
 
-        attr {
+        style {
             backgroundColor { ColorConstants.blue() }
             cornerRadius(0f)
 

@@ -13,7 +13,7 @@ class ComponentBuilder<T : Component>(var component: T) : RBuilder() {
     override fun toDescriptor(): RDescriptor = ComponentDescriptor(component)
 }
 
-fun <T : Component> ComponentBuilder<T>.attr(func: T.()->Unit){
+fun <T : Component> ComponentBuilder<T>.style(func: T.()->Unit){
     component.func()
 }
 

@@ -53,6 +53,7 @@ object Renderer {
             unmountAllRComponents(ctx, mount)
             traverse(ctx, mount, node)
             postUpdate(ctx)
+            ctx.updateListeners.forEach { it(mount to node) }
         }
     }
 

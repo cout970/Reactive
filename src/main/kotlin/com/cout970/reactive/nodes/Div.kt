@@ -16,6 +16,7 @@ class DivBuilder : RBuilder() {
 
 fun RBuilder.div(key: String? = null, block: DivBuilder.() -> Unit = {}) = +DivBuilder().apply(block).build(key)
 
-fun DivBuilder.attr(func: Panel.() -> Unit) {
+fun DivBuilder.style(func: Panel.() -> Unit) {
     deferred = { (it as Panel).func() }
 }
+

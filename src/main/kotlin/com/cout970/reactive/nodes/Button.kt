@@ -18,6 +18,6 @@ class ButtonBuilder(var text: String = "") : RBuilder() {
 fun RBuilder.button(text: String = "", key: String? = null, block: ButtonBuilder.() -> Unit = {}) =
         +ButtonBuilder(text).apply(block).build(key)
 
-fun ButtonBuilder.attr(func: Button.() -> Unit) {
+fun ButtonBuilder.style(func: Button.() -> Unit) {
     deferred = { (it as Button).func() }
 }
