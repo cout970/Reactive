@@ -13,14 +13,23 @@ class DemoComponent : RComponent<EmptyProps, DemoState>() {
     override fun getInitialState() = DemoState(0)
 
     override fun RBuilder.render() {
-        +Label("You clicked me ${state.count} times!").apply {
-
-            sizeX = 150f
-            sizeY = 30f
-
-            backgroundColor { lightBlue() }
-            borderless()
-
+        
+        label("You clicked me ${state.count} times!"){
+        
+            style {
+                sizeX = 150f
+                sizeY = 30f
+        
+                horizontalAlign = HorizontalAlign.CENTER
+        
+                backgroundColor { ColorConstants.lightBlue() }
+                borderless()
+            }
+        
+            postMount {
+                center()
+            }
+        
             onClick {
                 setState { DemoState(count + 1) }
             }

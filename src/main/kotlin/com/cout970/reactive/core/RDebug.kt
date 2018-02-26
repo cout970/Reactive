@@ -15,7 +15,7 @@ object RDebug {
 
     fun printTree(comp: Component, prefix: String = "") {
         println("${prefix}Node(${comp.getKey()}, ${comp::class.java.simpleName}){")
-        comp.childs.forEach {
+        comp.childComponents.forEach {
             printTree(it, "$prefix|   ")
         }
         println("$prefix}")

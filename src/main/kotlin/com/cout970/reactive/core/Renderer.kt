@@ -9,6 +9,7 @@ object Renderer {
     const val METADATA_KEY = "key"
     const val METADATA_COMPONENTS = "ReactiveRComponents"
     const val METADATA_NODE_TREE = "ReactiveNodeTree"
+    const val METADATA_POST_MOUNT = "ReactivePostMount"
 
     // This lock can be used to avoid critical races between threads
     val updateLock = Any()
@@ -53,7 +54,18 @@ object Renderer {
             unmountAllRComponents(ctx, mount)
             traverse(ctx, mount, node)
             postUpdate(ctx)
+            callPostMount(mount)
             ctx.updateListeners.forEach { it(mount to node) }
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun callPostMount(comp: Component) {
+        comp.metadata[Renderer.METADATA_POST_MOUNT]?.let { func ->
+            (func as? ((Component) -> Unit))?.invoke(comp)
+        }
+        comp.childComponents.forEach {
+            callPostMount(it)
         }
     }
 
@@ -79,24 +91,24 @@ object Renderer {
         comp.metadata[METADATA_NODE_TREE] = childNodes
 
         if (comp.count() != children.count()) {
-            comp.clearChilds()
+            comp.clearChildComponents()
             children.forEach { (childComp, childCompChilds) ->
                 comp.add(childComp)
                 traverse(ctx, childComp, childCompChilds.toFragment())
             }
         } else {
-            val newChilds = comp.childs.zip(children).map { (oldComp, pair) ->
+            val newChilds = comp.childComponents.zip(children).map { (oldComp, pair) ->
                 val (newComp, childs) = pair
                 merge(ctx, oldComp, newComp, childs)
             }
-            comp.clearChilds()
+            comp.clearChildComponents()
             comp.addAll(newChilds)
         }
     }
 
     private fun unmountAllRComponents(ctx: RContext, comp: Component) {
         comp.unmountComponents(ctx)
-        comp.childs.forEach { unmountAllRComponents(ctx, it) }
+        comp.childComponents.forEach { unmountAllRComponents(ctx, it) }
     }
 
     private fun expandLayer(ctx: RContext, comp: Component, node: RNode): List<Pair<Component, List<RNode>>> {
@@ -179,7 +191,7 @@ object Renderer {
         }
 
         // Move childs to the new tree to be checked and updated by traverse
-        new.addAll(old.childs)
+        new.addAll(old.childComponents)
         // Move old components to the new tree to keep the state
         val compStates = old.metadata[METADATA_COMPONENTS]
         if (compStates != null) {
