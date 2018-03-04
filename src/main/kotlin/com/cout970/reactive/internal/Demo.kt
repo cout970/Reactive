@@ -5,6 +5,8 @@ import com.cout970.reactive.core.RContext
 import com.cout970.reactive.core.Renderer
 import com.cout970.reactive.core.SyncManager
 import org.joml.Vector2f
+import org.liquidengine.legui.animation.Animator
+import org.liquidengine.legui.layout.LayoutManager
 
 fun demoWindow(builder: (LeguiEnvironment) -> RContext) {
 
@@ -14,11 +16,19 @@ fun demoWindow(builder: (LeguiEnvironment) -> RContext) {
 
         val ctx = builder(env)
 
+        // Update all layouts when the components are mounted/unmounted
+        ctx.registerUpdateListener {
+            LayoutManager.getInstance().layout(env.frame)
+        }
+        // Update layouts for first time
+        LayoutManager.getInstance().layout(env.frame)
+
         updateOnResize(ctx, env)
 
         AsyncManager.setInstance(SyncManager)
         env.update = {
             SyncManager.runSync()
+            Animator.getInstance().runAnimations()
         }
 
         env.loop()
@@ -36,7 +46,7 @@ fun updateOnResize(ctx: RContext, env: LeguiEnvironment) {
 
         // limit resize count to 1 per second
         val now = System.currentTimeMillis()
-        if (now - lastTime > 1000) {
+        if (now - lastTime > 100) {
             lastTime = now
 
             // Rerender the screen

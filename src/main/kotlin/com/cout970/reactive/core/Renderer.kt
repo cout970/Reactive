@@ -1,8 +1,6 @@
 package com.cout970.reactive.core
 
-import com.cout970.reactive.nodes.RComponentDescriptor
 import org.liquidengine.legui.component.Component
-import org.liquidengine.legui.event.Event
 
 object Renderer {
 
@@ -52,7 +50,7 @@ object Renderer {
         synchronized(updateLock) {
             preUpdate(ctx)
             unmountAllRComponents(ctx, mount)
-            traverse(ctx, mount, node)
+            ReconciliationManager.traverse(ctx, mount, node)
             postUpdate(ctx)
             callPostMount(mount)
             ctx.updateListeners.forEach { it(mount to node) }
@@ -84,125 +82,9 @@ object Renderer {
         }
     }
 
-    private fun traverse(ctx: RContext, comp: Component, childNodes: RNode) {
-
-        val children: List<Pair<Component, List<RNode>>> = expandLayer(ctx, comp, childNodes)
-
-        comp.metadata[METADATA_NODE_TREE] = childNodes
-
-        if (comp.count() != children.count()) {
-            comp.clearChildComponents()
-            children.forEach { (childComp, childCompChilds) ->
-                comp.add(childComp)
-                traverse(ctx, childComp, childCompChilds.toFragment())
-            }
-        } else {
-            val newChilds = comp.childComponents.zip(children).map { (oldComp, pair) ->
-                val (newComp, childs) = pair
-                merge(ctx, oldComp, newComp, childs)
-            }
-            comp.clearChildComponents()
-            comp.addAll(newChilds)
-        }
-    }
-
     private fun unmountAllRComponents(ctx: RContext, comp: Component) {
         comp.unmountComponents(ctx)
         comp.childComponents.forEach { unmountAllRComponents(ctx, it) }
-    }
-
-    private fun expandLayer(ctx: RContext, comp: Component, node: RNode): List<Pair<Component, List<RNode>>> {
-
-        val descriptor = node.componentDescriptor
-
-        return when (descriptor) {
-            is RComponentDescriptor<*, *> -> {
-                createRComponent(ctx, descriptor, comp, node.key).render().flatMap { expandLayer(ctx, comp, it) }
-            }
-            FragmentDescriptor -> {
-                node.children.flatMap { expandLayer(ctx, comp, it) }
-            }
-            EmptyDescriptor -> emptyList()
-            else -> {
-                listOf(createComponent(node) to node.children)
-            }
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun createRComponent(ctx: RContext, descriptor: RComponentDescriptor<*, *>, mount: Component, key: String?)
-            : RComponent<*, *> {
-        if (METADATA_COMPONENTS !in mount.metadata) {
-            mount.metadata[METADATA_COMPONENTS] = mutableListOf<RComponent<*, *>>()
-        }
-        val compList = mount.metadata[METADATA_COMPONENTS] as MutableList<RComponent<*, *>>
-
-        val alreadyExisting = compList.find { it::class.java == descriptor.clazz && !it.mounted && it.key == key }
-        val rComponent: RComponent<RProps, RState>
-
-        rComponent = if (alreadyExisting != null) {
-            alreadyExisting as RComponent<RProps, RState>
-        } else {
-            try {
-                (descriptor.clazz.newInstance() as RComponent<RProps, RState>).also {
-                    compList.add(it)
-                    it.key = key
-                    it.ctx = ctx
-                }
-            } catch (e: Exception) {
-                throw IllegalStateException("${descriptor.clazz} doesn't have a empty constructor!", e)
-            }
-        }
-
-        rComponent.componentWillReceiveProps(descriptor.props)
-        rComponent.mountPoint = mount
-        rComponent.mounted = true
-        ctx.mountedComponents.add(rComponent)
-        return rComponent
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun createComponent(node: RNode): Component {
-        return node.componentDescriptor.mapToComponent().apply {
-
-            metadata[METADATA_KEY] = node.key
-
-            node.listeners.forEach { listener_ ->
-                val (clazz, handler) = listener_ as Listener<Event<Component>>
-                listenerMap.addListener(clazz, handler)
-            }
-
-            node.deferred?.invoke(this)
-        }
-    }
-
-    private fun merge(ctx: RContext, old: Component, new: Component, childs: List<RNode>): Component {
-        if (old.javaClass != new.javaClass) {
-            traverse(ctx, new, childs.toFragment())
-            return new
-        }
-        if (old.count() != childs.count()) {
-            // Technically childs.count() is not the amount of sub-components what will get generated,
-            // because RComponents can generate more than 1 root component
-            // I don't know how to handle this situation, so I will use the Ostrich algorithm,
-            // just assuming that the trees can't merge and remove all local state in the child components
-            traverse(ctx, new, childs.toFragment())
-            return new
-        }
-
-        // Move childs to the new tree to be checked and updated by traverse
-        new.addAll(old.childComponents)
-        // Move old components to the new tree to keep the state
-        val compStates = old.metadata[METADATA_COMPONENTS]
-        if (compStates != null) {
-            new.metadata[METADATA_COMPONENTS] = compStates
-        }
-
-        // fuck it my head hurts
-        // this was supposed to keep the subtrees that didn't change but fuck it
-        // I will fix this later when everything else works
-        traverse(ctx, new, childs.toFragment())
-        return new
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -214,9 +96,5 @@ object Renderer {
                 ctx.unmountedComponents.add(it); it.mounted = false
             }
         }
-    }
-
-    private fun List<RNode>.toFragment(): RNode {
-        return RNode("Fragment", FragmentDescriptor, this)
     }
 }

@@ -6,7 +6,7 @@ import org.liquidengine.legui.event.Event
 
 open class RBuilder {
 
-    private val children = mutableListOf<RNode>()
+    protected val children = mutableListOf<RNode>()
     val listeners = mutableListOf<Listener<*>>()
     var deferred: ((Component) -> Unit)? = null
 
@@ -25,7 +25,7 @@ open class RBuilder {
 
     protected open fun toDescriptor(): RDescriptor = FragmentDescriptor
 
-    fun build(key: String? = null): RNode = RNode(key, toDescriptor(), children, deferred, listeners)
+    open fun build(key: String? = null): RNode = RNode(key, toDescriptor(), children, deferred, listeners)
 
     fun buildList() = children.toList()
 }
