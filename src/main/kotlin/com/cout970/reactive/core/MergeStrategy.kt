@@ -3,6 +3,8 @@ package com.cout970.reactive.core
 import org.liquidengine.legui.component.Component
 import org.liquidengine.legui.component.ScrollBar
 import org.liquidengine.legui.component.ScrollablePanel
+import org.liquidengine.legui.component.misc.animation.scrollablepanel.ScrollablePanelAnimation
+import java.lang.ref.WeakReference
 
 interface IMergeStrategy {
 
@@ -34,7 +36,17 @@ object ScrollablePanelMergeStrategy : IMergeStrategy {
 
         DefaultMergeStrategy.merge(old, new)
 
-        old.animation.stopAnimation()
+        // ScrollablePanelAnimation fields are private so they cannot be moved to the new ScrollablePanel
+        // Instead the old animation is moved to the new panel and the field 'scrollablePanel' is updated
+        new.animation.stopAnimation()
+        new.animation = old.animation
+
+        (new.animation as? ScrollablePanelAnimation)?.let {
+            ReflectUtil.set(it, "scrollablePanel", WeakReference(new))
+        }
+
+        // Fix scrolling issues
+        new.container.position.set(old.container.position)
 
         return new
     }

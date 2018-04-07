@@ -1,6 +1,6 @@
 buildscript {
     ext.kotlin_version = '1.2.21'
-    ext.legui_version = "1.4.5-185"
+    ext.legui_version = "1.4.5-190"
 
     repositories {
         mavenCentral()
@@ -11,7 +11,7 @@ buildscript {
 }
 
 group 'com.cout970.'
-version '1.2.0'
+version '1.2.2'
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
@@ -54,14 +54,8 @@ compileTestKotlin {
 
 jar {
     exclude("com/cout970/reactive/internal/**")
-}
-
-task sourceJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
     from(sourceSets.main.allSource)
 }
-
-jar.dependsOn sourceJar
 
 kotlin {
     experimental {
