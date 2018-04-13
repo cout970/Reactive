@@ -8,8 +8,6 @@ import com.cout970.reactive.dsl.postMount
 import org.liquidengine.legui.component.Component
 import org.liquidengine.legui.component.ScrollBar
 import org.liquidengine.legui.component.ScrollablePanel
-import org.liquidengine.legui.layout.borderlayout.BorderLayout
-import org.liquidengine.legui.layout.borderlayout.BorderLayoutConstraint
 
 
 class ScrollablePanelDescriptor : RDescriptor {
@@ -47,14 +45,6 @@ class ScrollablePanelBuilder : RBuilder() {
         return ComponentBuilder(panel).apply {
             deferred = this@ScrollablePanelBuilder.deferred
             listeners.addAll(this@ScrollablePanelBuilder.listeners)
-
-            postMount {
-                (layout as? BorderLayout)?.let { layout ->
-                    layout.addComponent(child("Viewport")!!, BorderLayoutConstraint.CENTER)
-                    layout.addComponent(child("VerticalScroll")!!, BorderLayoutConstraint.RIGHT)
-                    layout.addComponent(child("HorizontalScroll")!!, BorderLayoutConstraint.BOTTOM)
-                }
-            }
 
             comp(panel.verticalScrollBar, "VerticalScroll") {
                 vertical()

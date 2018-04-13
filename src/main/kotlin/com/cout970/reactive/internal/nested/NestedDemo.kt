@@ -147,7 +147,7 @@ class ExampleToggleButton : RComponent<PositionProps, ExampleToggleButton.State>
 
         style {
             backgroundColor { if (state.on) ColorConstants.green() else ColorConstants.red() }
-            cornerRadius(0f)
+            borderRadius(0f)
 
             position.set(props.pos)
             sizeX = 32f
@@ -186,7 +186,7 @@ class CounterButton : RComponent<EmptyProps, CounterButton.State>() {
 
         style {
             backgroundColor { ColorConstants.lightBlack() }
-            cornerRadius(0f)
+            borderRadius(0f)
             textState.textColor = ColorConstants.white()
             sizeX = 16f
             sizeY = 32f
@@ -212,7 +212,7 @@ class ForceUpdateButton : RStatelessComponent<ForceUpdateButton.Props>() {
 
         style {
             backgroundColor { ColorConstants.blue() }
-            cornerRadius(0f)
+            borderRadius(0f)
 
             position.set(props.pos)
             sizeX = 32f

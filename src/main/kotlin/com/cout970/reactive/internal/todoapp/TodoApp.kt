@@ -84,7 +84,7 @@ class TodoList : RStatelessComponent<TodoListProps>() {
 
         style {
             if (props.items.isEmpty())
-                isVisible = false
+                displayNone()
 
             posX = 10f
             posY = 90f

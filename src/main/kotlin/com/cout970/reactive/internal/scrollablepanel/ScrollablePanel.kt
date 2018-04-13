@@ -8,9 +8,6 @@ import com.cout970.reactive.nodes.div
 import com.cout970.reactive.nodes.scrollablePanel
 import com.cout970.reactive.nodes.style
 import org.joml.Vector4f
-import org.liquidengine.legui.component.Component
-import org.liquidengine.legui.layout.Layout
-import org.liquidengine.legui.layout.LayoutConstraint
 import org.liquidengine.legui.style.color.ColorConstants.black
 import org.liquidengine.legui.style.color.ColorConstants.white
 import java.awt.Color.getHSBColor
@@ -19,21 +16,10 @@ fun main(args: Array<String>) {
     demoWindow { env ->
         env.frame.container.backgroundColor { black() }
 
+        env.context.isDebugEnabled = true
+
         Renderer.render(env.frame.container) {
             child(Scroll::class)
-        }
-    }
-}
-
-private class FillXLayout : Layout {
-    override fun removeComponent(component: Component?) = Unit
-
-    override fun addComponent(component: Component?, constraint: LayoutConstraint?) = Unit
-
-    override fun layout(parent: Component) {
-        parent.childComponents.forEach {
-            it.position.x = 0f
-            it.size.x = parent.size.x
         }
     }
 }
@@ -41,7 +27,6 @@ private class FillXLayout : Layout {
 data class ScrollState(val seconds: Int) : RState
 
 class Scroll : RComponent<EmptyProps, ScrollState>() {
-
 
     override fun getInitialState() = ScrollState(0)
 
@@ -68,9 +53,9 @@ class Scroll : RComponent<EmptyProps, ScrollState>() {
         }
 
         viewport {
-            style {
-                // This will set the container sizeX to the same size as the viewport in the x axis
-                layout = FillXLayout()
+
+            postMount {
+                sizeX = parent.sizeX - 10f
             }
         }
 
@@ -78,12 +63,10 @@ class Scroll : RComponent<EmptyProps, ScrollState>() {
             style {
                 backgroundColor { white() }
                 sizeY = 8f * 255f
-
-                // this will scale all the colored panels in the x axis so they fit into the container
-                layout = FillXLayout()
             }
 
             postMount {
+                sizeX = parent.sizeX - 10f
                 // Place colors in column, starting at the top and going down
                 floatTop(0f)
             }
@@ -100,6 +83,10 @@ class Scroll : RComponent<EmptyProps, ScrollState>() {
                             Vector4f(color.red / 255f, color.green / 255f, color.blue / 255f, 1f)
                         }
                         sizeY = 8f
+                    }
+
+                    postMount {
+                        sizeX = parent.sizeX
                     }
                 }
             }

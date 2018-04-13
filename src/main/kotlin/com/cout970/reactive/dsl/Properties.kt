@@ -1,6 +1,7 @@
 package com.cout970.reactive.dsl
 
 import org.liquidengine.legui.component.Component
+import org.liquidengine.legui.style.Style
 
 
 var Component.posX
@@ -49,22 +50,26 @@ fun Component.disable() {
     isEnabled = false
 }
 
-fun Component.visible() {
-    isVisible = true
+fun Component.displayBlock() {
+    style.display = Style.DisplayType.MANUAL
 }
 
-fun Component.invisible() {
-    isVisible = false
+fun Component.displayNone() {
+    style.display = Style.DisplayType.NONE
+}
+
+fun Component.displayFlex() {
+    style.display = Style.DisplayType.FLEX
 }
 
 fun Component.hide() {
     isEnabled = false
-    isVisible = false
+    displayNone()
 }
 
 fun Component.show() {
     isEnabled = true
-    isVisible = true
+    displayBlock()
 }
 
 fun Component.floatTop(padding: Float, margin: Float = 0f) {

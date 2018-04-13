@@ -26,7 +26,7 @@ fun Component.borderless() {
 }
 
 fun Component.rectCorners() {
-    style.cornerRadius.set(0f)
+    style.setBorderRadius(0f)
 }
 
 var Component.borderSize: Float
@@ -39,38 +39,35 @@ fun Component.borderColor(func: () -> Vector4f) {
     (style.border as? SimpleLineBorder)?.color = func()
 }
 
-fun Component.cornerRadius(amount: Float) {
-    style.cornerRadius.set(amount, amount, amount, amount)
+fun Component.borderRadius(amount: Float) {
+    style.borderRadius.set(amount, amount, amount, amount)
 }
 
 fun Component.padding(amount: Float) {
-    if (style.padding == null) style.padding = Vector4f()
-    style.padding.set(amount, amount, amount, amount)
+    padding(amount, amount, amount, amount)
 }
 
 fun Component.padding(left: Float, top: Float, right: Float, bottom: Float) {
-    if (style.padding == null) style.padding = Vector4f()
-    style.padding.set(left, top, right, bottom)
+    style.paddingTop = top
+    style.paddingLeft = left
+    style.paddingRight = right
+    style.paddingBottom = bottom
 }
 
 fun Component.paddingTop(amount: Float) {
-    if (style.padding == null) style.padding = Vector4f()
-    style.padding.y = amount
+    style.paddingTop = amount
 }
 
 fun Component.paddingBottom(amount: Float) {
-    if (style.padding == null) style.padding = Vector4f()
-    style.padding.w = amount
+    style.paddingBottom = amount
 }
 
 fun Component.paddingLeft(amount: Float) {
-    if (style.padding == null) style.padding = Vector4f()
-    style.padding.x = amount
+    style.paddingLeft = amount
 }
 
 fun Component.paddingRight(amount: Float) {
-    if (style.padding == null) style.padding = Vector4f()
-    style.padding.z = amount
+    style.paddingRight = amount
 }
 
 var TextComponent.fontSize: Float

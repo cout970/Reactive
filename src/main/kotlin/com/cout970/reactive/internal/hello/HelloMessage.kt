@@ -11,11 +11,12 @@ import com.cout970.reactive.nodes.div
 import com.cout970.reactive.nodes.label
 import com.cout970.reactive.nodes.style
 import org.liquidengine.legui.component.optional.align.HorizontalAlign
+import org.liquidengine.legui.component.optional.align.VerticalAlign
 
 fun main(args: Array<String>) {
     demoWindow { env ->
         Renderer.render(env.frame.container) {
-            child(HelloMessage::class, HelloMessageProps("Taylor"))
+            child(HelloMessage::class, HelloMessageProps("World"))
         }
     }
 }
