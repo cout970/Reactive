@@ -6,7 +6,7 @@ import com.cout970.reactive.core.Renderer
 import com.cout970.reactive.core.SyncManager
 import org.joml.Vector2f
 import org.liquidengine.legui.animation.Animator
-import org.liquidengine.legui.layout.LayoutManager
+import org.liquidengine.legui.system.layout.LayoutManager
 
 fun demoWindow(builder: (LeguiEnvironment) -> RContext) {
 

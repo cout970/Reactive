@@ -5,6 +5,9 @@ import com.cout970.reactive.core.Renderer
 import com.cout970.reactive.nodes.ComponentBuilder
 import com.cout970.reactive.nodes.comp
 import org.liquidengine.legui.component.Component
+import org.liquidengine.legui.event.Event
+import org.liquidengine.legui.listener.EventListener
+import org.liquidengine.legui.listener.ListenerMap
 
 /**
  * This function converts all the children of this component to RNodes so they are not ignored/removed by
@@ -37,7 +40,7 @@ fun RBuilder.postMount(func: Component.() -> Unit) {
         // Preserve the old postMount
         val finalFunc = if (oldFunc != null) {
 
-            val comb : Component.() -> Unit = {
+            val comb: Component.() -> Unit = {
                 (oldFunc as? (Component.() -> Unit))?.invoke(this)
                 func()
             }
@@ -58,4 +61,9 @@ fun RBuilder.postMount(func: Component.() -> Unit) {
  */
 fun Component.child(key: String): Component? {
     return childComponents.find { it.metadata[Renderer.METADATA_KEY] == key }
+}
+
+fun <E : Event<*>> ListenerMap.replaceListener(eventClass: Class<E>, listener: EventListener<E>) {
+    getListeners<E>(eventClass).firstOrNull()?.let { removeListener(eventClass, it) }
+    getListeners<E>(eventClass).add(listener)
 }
