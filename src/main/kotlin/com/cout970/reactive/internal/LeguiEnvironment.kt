@@ -29,8 +29,8 @@ class LeguiEnvironment(windowSize: Vector2f) {
     var update: () -> Unit = {}
 
     init {
-        System.setProperty("joml.nounsafe", java.lang.Boolean.TRUE.toString())
-        System.setProperty("java.awt.headless", java.lang.Boolean.TRUE.toString())
+        System.setProperty("joml.nounsafe", "true")
+        System.setProperty("java.awt.headless", "true")
         if (!GLFW.glfwInit()) {
             throw RuntimeException("Can't initialize GLFW")
         }

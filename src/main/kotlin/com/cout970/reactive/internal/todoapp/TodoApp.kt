@@ -29,6 +29,10 @@ class TodoApp : RComponent<EmptyProps, TodoAppState>() {
             sizeY = 300f
         }
 
+        postMount {
+            center()
+        }
+
         label("TODO") {
             style {
                 sizeX = 180f
